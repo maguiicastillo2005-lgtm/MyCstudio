@@ -1,1 +1,979 @@
 # MyCstudio
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyC Studio - Reservá tu turno</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --rosa-bebe: #f8c8dc;
+            --rosa-bebe-dark: #d986a9;
+            --rosa-bebe-darker: #c55f92;
+            --gris-suave: #d4d4d8;
+            --gris-suave-dark: #a1a1aa;
+            --gris-oscuro: #4b5563;
+            --blanco: #ffffff;
+            --negro-suave: #1f2937;
+        }
+
+        body {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, var(--rosa-bebe) 0%, #ffe4e6 100%);
+            min-height: 100vh;
+            color: var(--negro-suave);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header - Títulos más oscuros */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .logo-main {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(3rem, 8vw, 6rem);
+            color: var(--rosa-bebe-darker);
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .logo-sub {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--gris-oscuro);
+            font-weight: 600;
+            position: relative;
+            top: -10px;
+        }
+
+        .slogan {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--gris-suave-dark);
+            margin-top: 30px;
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        /* Navegación */
+        .nav {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            margin: 20px auto;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 15px 30px;
+            margin: 10px 0;
+            background: var(--rosa-bebe);
+            color: var(--negro-suave);
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--rosa-bebe-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(217,134,169,0.4);
+        }
+
+        /* Secciones */
+        .section {
+            display: none;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px;
+            margin: 30px auto;
+            max-width: 800px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Títulos de sección más oscuros */
+        .section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            color: var(--rosa-bebe-darker);
+            font-weight: 700;
+        }
+
+        .section h3 {
+            color: var(--gris-oscuro);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Formulario */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--gris-suave);
+            border-radius: 15px;
+            font-size: 1rem;
+            font-family: 'Playfair Display', serif;
+            background: rgba(255,255,255,0.8);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--rosa-bebe-darker);
+            box-shadow: 0 0 0 3px rgba(197,95,146,0.2);
+            background: white;
+        }
+
+        .form-group input:invalid {
+            border-color: #ef4444;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: var(--gris-suave);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .radio-option input[type="radio"] {
+            width: auto;
+        }
+
+        .radio-option:hover {
+            background: var(--rosa-bebe);
+            transform: translateY(-2px);
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-content {
+            background: var(--rosa-bebe);
+            color: var(--negro-suave);
+        }
+
+        /* Calendario */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .calendar-header {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            padding: 15px;
+            background: var(--rosa-bebe);
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--gris-suave);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--negro-suave);
+        }
+
+        .calendar-day:hover,
+        .calendar-day.available {
+            background: var(--rosa-bebe);
+            border-color: var(--rosa-bebe-dark);
+            color: white;
+        }
+
+        .calendar-day.selected {
+            background: var(--rosa-bebe-darker);
+            border-color: var(--gris-oscuro);
+            color: white;
+            position: relative;
+        }
+
+        .calendar-day.selected::after {
+            content: '✓';
+            position: absolute;
+            font-size: 1.2rem;
+            font-weight: bold;
+            top: 2px;
+            right: 2px;
+        }
+
+        .calendar-day.unavailable {
+            background: #f1f1f1;
+            color: #999;
+            cursor: not-allowed;
+            border-color: #d1d5db;
+        }
+
+        /* Horarios nuevos: 8-10 y 14-16:30 */
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .time-slot {
+            padding: 15px;
+            text-align: center;
+            border: 2px solid var(--gris-suave);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--negro-suave);
+            font-size: 0.95rem;
+        }
+
+        .time-slot:hover,
+        .time-slot.available {
+            background: var(--rosa-bebe);
+            border-color: var(--rosa-bebe-dark);
+            color: white;
+        }
+
+        .time-slot.selected {
+            background: var(--rosa-bebe-darker);
+            border-color: var(--gris-oscuro);
+            color: white;
+        }
+
+        /* Foto diseño */
+        .photo-section {
+            text-align: center;
+        }
+
+        .photo-label {
+            display: inline-block;
+            background: var(--rosa-bebe);
+            color: var(--negro-suave);
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            font-size: 1.1rem;
+        }
+
+        .photo-label:hover {
+            background: var(--rosa-bebe-dark);
+            transform: translateY(-2px);
+        }
+
+        .photo-preview {
+            margin-top: 15px;
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .photo-info {
+            background: var(--gris-suave);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 15px 0;
+            font-style: italic;
+            color: var(--gris-oscuro);
+            font-weight: 500;
+        }
+
+        /* Botones */
+        .btn {
+            width: 100%;
+            padding: 18px 30px;
+            background: linear-gradient(145deg, var(--rosa-bebe-darker), var(--rosa-bebe-dark));
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            font-family: 'Playfair Display', serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(197,95,146,0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            background: var(--gris-suave);
+        }
+
+        /* Mensajes */
+        .message {
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* SECCIÓN PRECIOS - MEJORADA */
+        .prices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .price-card {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .price-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--rosa-bebe), var(--rosa-bebe-darker));
+        }
+
+        .price-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--rosa-bebe);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .price-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--rosa-bebe-darker);
+            margin: 15px 0;
+        }
+
+        /* NUEVA SECCIÓN EXTRAS */
+        .extras-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .extra-card {
+            background: linear-gradient(145deg, #fff7f7, white);
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--rosa-bebe-darker);
+            transition: all 0.3s ease;
+        }
+
+        .extra-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(197,95,146,0.2);
+        }
+
+        .extra-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--rosa-bebe-darker);
+            margin: 10px 0;
+        }
+
+        .extra-icon {
+            font-size: 2.5rem;
+            color: var(--rosa-bebe-dark);
+            margin-bottom: 15px;
+        }
+
+        /* Info importante */
+        .info-box {
+            background: var(--gris-suave);
+            padding: 25px;
+            border-radius: 20px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .info-box h3 {
+            color: var(--rosa-bebe-darker);
+            margin-bottom: 15px;
+        }
+
+        .guarantee-box {
+            background: linear-gradient(145deg, #d4edda, #c3e6cb);
+            border: 2px solid #10b981;
+            padding: 25px;
+            border-radius: 20px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .guarantee-box i {
+            font-size: 2rem;
+            color: #10b981;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .section {
+                padding: 25px 20px;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+            }
+            
+            .radio-option {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="logo-main">MyC</h1>
+            <h2 class="logo-sub">studio</h2>
+            <p class="slogan">✨ Invierte en ti, brilla desde las uñas ✨</p>
+        </div>
+
+        <!-- Navegación -->
+        <nav class="nav">
+            <a href="#" class="nav-btn active" onclick="showSection('reservar')">
+                <i class="fas fa-calendar-plus"></i> Reservar Turno
+            </a>
+            <a href="#" class="nav-btn" onclick="showSection('precios')">
+                <i class="fas fa-tags"></i> Precios & Servicios
+            </a>
+        </nav>
+
+        <!-- Sección Reservar - FORM SIMPLIFICADO -->
+        <section id="reservar" class="section active">
+            <h2>
+                <i class="fas fa-calendar-check"></i> Reservá tu turno
+            </h2>
+            
+            <form id="bookingForm" novalidate>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Nombre completo <span style="color: #ef4444;">*</span></label>
+                    <input type="text" id="nombre" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Teléfono de contacto <span style="color: #ef4444;">*</span></label>
+                    <input type="tel" id="telefono" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-day"></i> Fecha <span style="color: #ef4444;">*</span>
+                        <span style="font-size: 0.9rem; color: var(--gris-suave-dark);">
+                            (Mínimo 3 días de anticipación)
+                        </span>
+                    </label>
+                    <div class="calendar" id="calendar"></div>
+                    <input type="hidden" id="fechaSeleccionada" required>
+                    <small style="color: #ef4444; display: block;" id="fechaError">Seleccioná una fecha</small>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-clock"></i> Horario <span style="color: #ef4444;">*</span></label>
+                    <div class="time-slots" id="timeSlots"></div>
+                    <input type="hidden" id="horarioSeleccionado" required>
+                    <small style="color: #ef4444; display: block;" id="horarioError">Seleccioná un horario</small>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-map-marker-alt"></i> Lugar del servicio <span style="color: #ef4444;">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="lugar" value="estudio" id="estudio" required>
+                            <span class="radio-content">
+                                <i class="fas fa-home" style="font-size: 1.5rem;"></i>
+                                <div>En el estudio</div>
+                            </span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="lugar" value="domicilio" id="domicilio">
+                            <span class="radio-content">
+                                <i class="fas fa-car" style="font-size: 1.5rem;"></i>
+                                <div>A domicilio<br><small>+ $2.500 viático</small></div>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Servicio a realizar <span style="color: #ef4444;">*</span></label>
+                    <div style="background: var(--gris-suave); padding: 20px; border-radius: 20px; margin-bottom: 15px; text-align: center; font-weight: 500; color: var(--gris-oscuro);">
+                        Todos los servicios incluyen 2 uñas con diseño GRATIS
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+                        <label style="display: block; padding: 20px; background: white; border-radius: 15px; cursor: pointer; border: 3px solid var(--gris-suave); transition: all 0.3s ease;">
+                            <input type="radio" name="servicio" value="softgel" data-precio="22000" style="margin-right: 15px;" required> 
+                            <strong>Soft Gel - $22.000</strong>
+                        </label>
+                        <label style="display: block; padding: 20px; background: white; border-radius: 15px; cursor: pointer; border: 3px solid var(--gris-suave); transition: all 0.3s ease;">
+                            <input type="radio" name="servicio" value="kapping" data-precio="20000" style="margin-right: 15px;">
+                            <strong>Kapping - $20.000</strong>
+                        </label>
+                        <label style="display: block; padding: 20px; background: white; border-radius: 15px; cursor: pointer; border: 3px solid var(--gris-suave); transition: all 0.3s ease;">
+                            <input type="radio" name="servicio" value="semipermanente" data-precio="16000" style="margin-right: 15px;">
+                            <strong>Semipermanente - $16.000</strong>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-image"></i> Foto del diseño <span style="color: #ef4444;">*</span></label>
+                    <div class="photo-info">
+                        💅 Diseño elección en dos uñas, adicionales se cobran como extra ($500 c/u)
+                    </div>
+                    <label for="foto" class="photo-label">
+                        <i class="fas fa-cloud-upload-alt"></i> Subir foto del diseño
+                    </label>
+                    <input type="file" id="foto" accept="image/*" required style="display: none;">
+                    <img id="fotoPreview" class="photo-preview" alt="Preview">
+                    <small style="color: #ef4444; display: block;" id="fotoError">Subí la foto del diseño</small>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-credit-card"></i> Método de pago <span style="color: #ef4444;">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="pago" value="efectivo" required>
+                            <span class="radio-content">
+                                <i class="fas fa-money-bill-wave" style="font-size: 1.5rem; color: #10b981;"></i>
+                                <div>Efectivo</div>
+                            </span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="pago" value="transferencia">
+                            <span class="radio-content">
+                                <i class="fas fa-university" style="font-size: 1.5rem; color: #3b82f6;"></i>
+                                <div>Transferencia</div>
+                            </span>
+                        </label>
+                    </div>
+                    <small style="display: block; margin-top: 10px; color: var(--gris-oscuro); font-weight: 500;">
+                        💳 Seña del 30% al confirmar el turno
+                    </small>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn" disabled>
+                    <i class="fas fa-paper-plane"></i> Enviar Solicitud
+                </button>
+            </form>
+
+            <div id="message"></div>
+        </section>
+
+        <!-- Sección Precios - MEJORADA CON EXTRAS -->
+        <section id="precios" class="section">
+            <h2>
+                <i class="fas fa-gem"></i> Nuestros Servicios
+            </h2>
+            
+            <!-- SERVICIOS PRINCIPALES -->
+            <div class="prices-grid">
+                <div class="price-card">
+                    <i class="fas fa-gem" style="font-size: 3rem; color: var(--rosa-bebe-darker); margin-bottom: 20px;"></i>
+                    <h3>Soft Gel</h3>
+                    <div class="price-amount">$22.000</div>
+                    <ul style="text-align: left; margin: 20px 0; padding-left: 0;">
+                        <li style="margin: 8px 0; padding-left: 25px; position: relative;">•💅🏽<span style="position: absolute; left: 0;">&nbsp;</span>Extensión de uñas</li>
+                        <li style="margin: 8px 0; padding-left: 25px; position: relative;">•✨<span style="position: absolute; left: 0;">&nbsp;</span>Acabado natural y liviano</li>
+                        <li style="margin: 8px 0; padding-left: 25px; position: relative;">•🔒<span style="position: absolute; left: 0;">&nbsp;</span>Alta durabilidad sin dañar la uña</li>
+                        <li style="margin: 8px 0; padding-left: 25px; position: relative; color: #10b981; font-weight: 700;">•🎁<span style="position: absolute; left: 0;">&nbsp;</span>2 uñas con diseño gratis!!!</li>
+                    </ul>
+                </div>
+
+                <div class="price-card">
+                    <i class="fas fa-seedling" style="font-size: 3rem; color: var(--rosa-bebe-darker); margin-bottom: 20px;"></i>
+                    <h3>Kapping</h3>
+                    <div class="price-amount">$20.000</div>
+                    <ul style="text-align: left; margin: 20px 0; padding-left: 0;">
+                        <li style="margin: 8px 0; padding-left: 25px; position: relative;">•🌱<span style="position: absolute; left: 0;">&nbsp;</span>Ideal para crecimiento sano</li>
+                        <li style="margin: 8px 0; padding-left: 25px; position: relative;">•💪🏽<span style="position: absolute; left: 0;">&nbsp;</span>Refuerza tus uñas naturales</li>
+                        <li style="margin: 8px 0; padding-left: 25px; position: relative;">•💎<span style="position: absolute; left: 0;">&nbsp;</span>Resistencia premium</li>
+                        <li style="margin: 8px 0; padding-left: 25px; position: relative; color: #10b981; font-weight: 700;">•🎁<span style="position: absolute; left: 0;">&nbsp;</span>2 uñas con diseño gratis!!!</li>
+                    </ul>
+                </div>
+
+                <div class="price-card">
+                    <i class="fas fa-palette" style="font-size: 3rem; color: var(--rosa-bebe-darker); margin-bottom: 20px;"></i>
+                    <h3>Semipermanente</h3>
+                    <div class="price-amount">$16.000</div>
+                    <ul style="text-align: left; margin: 20px 0; padding-left: 0;">
+                        <li style="margin: 8px 0; padding-left: 25px; position: relative;">•🎨<span style="position: absolute; left: 0;">&nbsp;</span>Color perfecto por semanas</li>
+                        <li style="margin: 8px 0; padding-left: 25px; position: relative;">•⚡️<span style="position: absolute; left: 0;">&nbsp;</span>Secado inmediato</li>
+                        <li style="margin: 8px 0; padding-left: 25px; position: relative;">•💕<span style="position: absolute; left: 0;">&nbsp;</span>Clásico infalible</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- NUEVA SECCIÓN DE EXTRAS -->
+            <h3 style="text-align: center; margin: 40px 0 20px 0; color: var(--rosa-bebe-darker); font-size: 2rem;">
+                <i class="fas fa-sparkles"></i> Extras & Adicionales
+            </h3>
+            
+            <div class="extras-grid">
+                <div class="extra-card">
+                    <div class="extra-icon">✨</div>
+                    <h4>Strass</h4>
+                    <div class="extra-price">$50 c/u</div>
+                </div>
+                <div class="extra-card">
+                    <div class="extra-icon">🎨</div>
+                    <h4>Diseño extra por uña</h4>
+                    <div class="extra-price">$500</div>
+                </div>
+                <div class="extra-card">
+                    <div class="extra-icon">⭐</div>
+                    <h4>Full set</h4>
+                    <div class="extra-price">$1.500</div>
+                </div>
+                <div class="extra-card">
+                    <div class="extra-icon">🔧</div>
+                    <h4>Arreglo por uña</h4>
+                    <div class="extra-price">$1.500</div>
+                </div>
+            </div>
+
+            <!-- GARANTÍA ESPECIAL -->
+            <div class="guarantee-box">
+                <i class="fas fa-shield-alt"></i>
+                <h3 style="color: #10b981; margin-bottom: 15px; font-size: 1.5rem;">🛡️ GARANTÍA</h3>
+                <p style="font-size: 1.2rem; font-weight: 600; color: #155724;">
+                    <strong>¡Las uñas tienen una garantía de 5 días!*</strong>
+                </p>
+                <p style="font-size: 0.95rem; margin-top: 10px; color: #155724;">
+                    *Condiciones aplican según cuidado y uso
+                </p>
+            </div>
+
+            <div class="info-box">
+                <h3><i class="fas fa-info-circle"></i> Información importante</h3>
+                <p style="line-height: 1.6; font-size: 1.1rem;">
+                    💰 <strong>Seña del 30%</strong> requerida para confirmar turno<br>
+                    🚗 <strong>A domicilio: +$2.500</strong> viático<br>
+                    ⏰ Turnos con <strong>3 días de anticipación mínima</strong><br>
+                    ✅ Todos los precios incluyen <strong>2 uñas con diseño gratis</strong>
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Configuración
+        const WHATSAPP_NUMBER = '5491164092807';
+        const MIN_DAYS_AHEAD = 3;
+        
+        // NUEVOS HORARIOS: 8-10 y 14-16:30 cada 30min
+        const HORARIOS_DISPONIBLES = [
+            '08:00', '08:30', '09:00', '09:30', '10:00',
+            '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'
+        ];
+
+        let fechaSeleccionada = null;
+        let servicioSeleccionado = null;
+        let precioBase = 0;
+
+        // Inicializar calendario
+        function initCalendar() {
+            const calendar = document.getElementById('calendar');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const header = document.createElement('div');
+            header.className = 'calendar-header';
+            header.textContent = 'Días disponibles';
+            calendar.appendChild(header);
+
+            for (let i = 0; i < 30; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                dayDiv.textContent = date.getDate();
+                
+                if (i < MIN_DAYS_AHEAD) {
+                    dayDiv.classList.add('unavailable');
+                    dayDiv.title = 'Mínimo 3 días de anticipación';
+                } else {
+                    dayDiv.classList.add('available');
+                    dayDiv.onclick = () => selectDate(date);
+                }
+                
+                const dayName = date.toLocaleDateString('es-AR', { weekday: 'short' });
+                dayDiv.title = `${dayName} ${date.toLocaleDateString('es-AR')}`;
+                
+                calendar.appendChild(dayDiv);
+            }
+        }
+
+        function selectDate(date) {
+            fechaSeleccionada = date;
+            document.getElementById('fechaSeleccionada').value = date.toISOString().split('T')[0];
+            document.getElementById('fechaError').style.display = 'none';
+            
+            document.querySelectorAll('.calendar-day.available, .calendar-day.selected')
+                .forEach(day => day.classList.remove('selected'));
+            event.target.classList.add('selected');
+            
+            loadTimeSlots();
+            checkFormComplete();
+        }
+
+        function loadTimeSlots() {
+            const timeSlots = document.getElementById('timeSlots');
+            timeSlots.innerHTML = '';
+            
+            HORARIOS_DISPONIBLES.forEach(horario => {
+                const slot = document.createElement('div');
+                slot.className = 'time-slot available';
+                slot.textContent = horario;
+                slot.onclick = () => selectTimeSlot(horario);
+                timeSlots.appendChild(slot);
+            });
+        }
+
+        function selectTimeSlot(horario) {
+            document.getElementById('horarioSeleccionado').value = horario;
+            document.getElementById('horarioError').style.display = 'none';
+            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+            event.target.classList.add('selected');
+            checkFormComplete();
+        }
+
+        // Servicios
+        document.querySelectorAll('input[name="servicio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                servicioSeleccionado = this.value;
+                precioBase = parseInt(this.dataset.precio);
+                checkFormComplete();
+            });
+        });
+
+        // Lugares y pagos
+        document.querySelectorAll('input[name="lugar"], input[name="pago"]').forEach(radio => {
+            radio.addEventListener('change', checkFormComplete);
+        });
+
+        // Foto obligatoria
+        document.getElementById('foto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('fotoPreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById('fotoError').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+            checkFormComplete();
+        });
+
+        // Validación estricta - TODOS los campos obligatorios
+        function checkFormComplete() {
+            const nombre = document.getElementById('nombre').value.trim();
+            const telefono = document.getElementById('telefono').value.trim();
+            const fecha = document.getElementById('fechaSeleccionada').value;
+            const horario = document.getElementById('horarioSeleccionado').value;
+            const servicio = document.querySelector('input[name="servicio"]:checked');
+            const lugar = document.querySelector('input[name="lugar"]:checked');
+            const pago = document.querySelector('input[name="pago"]:checked');
+            const foto = document.getElementById('foto').files.length > 0;
+
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // MOSTRAR/OCULTAR ERRORES
+            document.getElementById('fechaError').style.display = fecha ? 'none' : 'block';
+            document.getElementById('horarioError').style.display = horario ? 'none' : 'block';
+            document.getElementById('fotoError').style.display = foto ? 'none' : 'block';
+
+            if (nombre && telefono && fecha && horario && servicio && lugar && pago && foto) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✅ Enviar Solicitud';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Completá todos los campos';
+            }
+        }
+
+        // Inputs texto
+        ['nombre', 'telefono'].forEach(id => {
+            document.getElementById(id).addEventListener('input', checkFormComplete);
+            document.getElementById(id).addEventListener('blur', function() {
+                if (!this.value.trim()) {
+                    this.style.borderColor = '#ef4444';
+                }
+            });
+        });
+
+        // Enviar formulario
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nombre = document.getElementById('nombre').value;
+            const telefono = document.getElementById('telefono').value;
+            const fecha = new Date(document.getElementById('fechaSeleccionada').value);
+            const horario = document.getElementById('horarioSeleccionado').value;
+            const servicio = document.querySelector('input[name="servicio"]:checked').value;
+            const lugar = document.querySelector('input[name="lugar"]:checked').value;
+            const pago = document.querySelector('input[name="pago"]:checked').value;
+            
+            const fechaFormato = fecha.toLocaleDateString('es-AR');
+            const viatico = lugar === 'domicilio' ? ' + $2.500 viático' : '';
+            const total = lugar === 'domicilio' ? precioBase + 2500 : precioBase;
+            const seña = Math.round(total * 0.3);
+
+            const mensaje = `✨ *NUEVA SOLICITUD DE TURNO* ✨%0A%0A` +
+                `👩‍🦰 *Nombre:* ${nombre}%0A` +
+                `📱 *Teléfono:* ${telefono}%0A` +
+                `📅 *Fecha:* ${fechaFormato} - ${horario}%0A` +
+                `💅 *Servicio:* ${servicio.toUpperCase()} (${total.toLocaleString()} ${viatico})%0A` +
+                `📍 *Lugar:* ${lugar === 'domicilio' ? '🚗 A DOMICILIO' : '🏠 EN EL ESTUDIO'}%0A` +
+                `💳 *Pago:* ${pago === 'efectivo' ? '💵 Efectivo' : '🏦 Transferencia'}%0A` +
+                `💰 *Seña requerida:* $${seña.toLocaleString()} (30%)%0A%0A` +
+                `⏳ *PENDIENTE DE TU APROBACIÓN*%0A%0A💕 *MyC Studio*`;
+
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`;
+            
+            showMessage('¡✅ Solicitud enviada correctamente! Te contactaremos pronto para confirmar tu turno. 😊', 'success');
+            window.open(whatsappUrl, '_blank');
+            
+            this.reset();
+            document.getElementById('fotoPreview').style.display = 'none';
+            document.querySelectorAll('.selected, .calendar-day.selected').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('[id$="Error"]').forEach(el => el.style.display = 'block');
+            fechaSeleccionada = null;
+            servicioSeleccionado = null;
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').textContent = 'Completá todos los campos';
+        });
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
+            setTimeout(() => messageDiv.innerHTML = '', 5000);
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Inicializar
+        initCalendar();
+        checkFormComplete();
+    </script>
+</body>
+</html>
